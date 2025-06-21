@@ -35,16 +35,13 @@ class NotificationService {
         initSettings,
         onDidReceiveNotificationResponse: _onNotificationTapped,
       );
-
-      print('Notification service initialized successfully');
     } catch (e) {
-      print('Error initializing notification service: $e');
+      // Error initializing notification service
     }
   }
 
   void _onNotificationTapped(NotificationResponse response) {
     // Handle notification tap
-    print('Notification tapped: ${response.payload}');
   }
 
   Future<void> scheduleMedicationReminder(Medication medication) async {
@@ -112,18 +109,12 @@ class NotificationService {
               'time': notificationTime.toString(),
             }),
           );
-
-          print(
-            '✅ Notification scheduled for ${medication.name} at ${notificationTime.toString()}',
-          );
         } else {
-          print(
-            '⚠️ Skipping notification for ${medication.name} - time has passed',
-          );
+          // Skipping notification for ${medication.name} - time has passed
         }
       }
     } catch (e) {
-      print('❌ Error scheduling notification for ${medication.name}: $e');
+      // Error scheduling notification for ${medication.name}: $e
     }
   }
 
@@ -133,20 +124,16 @@ class NotificationService {
       for (int i = 0; i < times.length; i++) {
         await _notifications.cancel(_getNotificationId(medicationId, i));
       }
-      print('✅ Cancelled notifications for medication ID: $medicationId');
     } catch (e) {
-      print(
-        '❌ Error cancelling notifications for medication ID $medicationId: $e',
-      );
+      // Error cancelling notifications for medication ID $medicationId: $e
     }
   }
 
   Future<void> cancelAllNotifications() async {
     try {
       await _notifications.cancelAll();
-      print('✅ Cancelled all notifications');
     } catch (e) {
-      print('❌ Error cancelling all notifications: $e');
+      // Error cancelling all notifications: $e
     }
   }
 
@@ -161,7 +148,7 @@ class NotificationService {
         return TimeOfDay(hour: timeMap['hour'], minute: timeMap['minute']);
       }).toList();
     } catch (e) {
-      print('❌ Error parsing times JSON: $e');
+      // Error parsing times JSON: $e
       return [];
     }
   }
@@ -179,10 +166,8 @@ class NotificationService {
             IOSFlutterLocalNotificationsPlugin
           >()
           ?.requestPermissions(alert: true, badge: true, sound: true);
-
-      print('✅ Notification permissions requested');
     } catch (e) {
-      print('❌ Error requesting notification permissions: $e');
+      // Error requesting notification permissions: $e
     }
   }
 
@@ -194,7 +179,7 @@ class NotificationService {
           >();
       return await androidPlugin?.areNotificationsEnabled() ?? false;
     } catch (e) {
-      print('❌ Error checking notification status: $e');
+      // Error checking notification status: $e
       return false;
     }
   }
@@ -216,9 +201,8 @@ class NotificationService {
           ),
         ),
       );
-      print('✅ Test notification sent');
     } catch (e) {
-      print('❌ Error showing test notification: $e');
+      // Error showing test notification: $e
     }
   }
 
@@ -227,7 +211,7 @@ class NotificationService {
     try {
       return await _notifications.pendingNotificationRequests();
     } catch (e) {
-      print('❌ Error getting pending notifications: $e');
+      // Error getting pending notifications: $e
       return [];
     }
   }

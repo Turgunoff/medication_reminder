@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import '../models/medication.dart';
 import '../services/database_service.dart';
+import '../main.dart';
 
 class AddMedicationScreen extends StatefulWidget {
   const AddMedicationScreen({super.key});
@@ -110,17 +111,16 @@ class _AddMedicationScreenState extends State<AddMedicationScreen> {
             duration: const Duration(seconds: 2),
           ),
         );
-        print('Dori muvaffaqiyatli qo\'shildi! (ID: $id)');
 
         // Clear form
         _clearForm();
 
-        // Navigate back to home screen and refresh
-        Navigator.pop(context, true); // Return true to indicate success
+        // Switch to HomeScreen
+        final mainScreenState = context
+            .findAncestorStateOfType<MainScreenState>();
+        mainScreenState?.setCurrentIndex(0);
       }
-    } catch (e, stack) {
-      print('Medication add error: $e');
-      print('Stack trace: $stack');
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -128,7 +128,6 @@ class _AddMedicationScreenState extends State<AddMedicationScreen> {
             backgroundColor: Colors.red,
           ),
         );
-        print('Xatolik yuz berdi: $e');
       }
     } finally {
       if (mounted) {
@@ -155,317 +154,473 @@ class _AddMedicationScreenState extends State<AddMedicationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('➕ Dori qo\'shish'),
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
+      backgroundColor: const Color(0xFFF8FAFC),
+      appBar: AppBar(title: const Text('➕ Dori qo\'shish'), elevation: 0),
       body: _isLoading
           ? const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(color: Colors.green),
+                  CircularProgressIndicator(color: Color(0xFF6366F1)),
                   SizedBox(height: 16),
-                  Text('Saqlanmoqda...'),
+                  Text(
+                    'Saqlanmoqda...',
+                    style: TextStyle(color: Color(0xFF6B7280), fontSize: 16),
+                  ),
                 ],
               ),
             )
           : Form(
               key: _formKey,
-              child: ListView(
-                padding: const EdgeInsets.all(16.0),
-                children: [
-                  // Header
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.green.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: Colors.green.withValues(alpha: 0.3),
+              child: CustomScrollView(
+                slivers: [
+                  // Header section
+                  SliverToBoxAdapter(
+                    child: Container(
+                      margin: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [Color(0xFF10B981), Color(0xFF059669)],
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(
+                              0xFF10B981,
+                            ).withValues(alpha: 0.3),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(
+                              Icons.add_circle_outline,
+                              color: Colors.white,
+                              size: 24,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          const Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Yangi dori qo\'shish',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  'Dorining ma\'lumotlarini to\'ldiring',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    child: const Row(
-                      children: [
-                        Icon(Icons.medication, color: Colors.green, size: 32),
-                        SizedBox(width: 12),
-                        Expanded(
+                  ),
+
+                  // Form fields
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        // Medication name
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Yangi dori qo\'shish',
+                              const Text(
+                                'Dori nomi',
                                 style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF1F2937),
                                 ),
                               ),
-                              Text(
-                                'Barcha maydonlarni to\'ldiring',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
+                              const SizedBox(height: 8),
+                              TextFormField(
+                                controller: _medicationNameController,
+                                decoration: const InputDecoration(
+                                  hintText: 'Masalan: Aspirin',
+                                  prefixIcon: Icon(
+                                    Icons.medication_outlined,
+                                    color: Color(0xFF6366F1),
+                                  ),
                                 ),
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Dori nomini kiriting';
+                                  }
+                                  return null;
+                                },
                               ),
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
 
-                  // Dori nomi
-                  TextFormField(
-                    controller: _medicationNameController,
-                    decoration: InputDecoration(
-                      labelText: '💊 Dori nomi',
-                      hintText: 'Masalan: Paracetamol',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      prefixIcon: const Icon(Icons.medication),
-                      filled: true,
-                      fillColor: Colors.grey.withValues(alpha: 0.05),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Dori nomini kiriting';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Dozalash
-                  TextFormField(
-                    controller: _dosageController,
-                    decoration: InputDecoration(
-                      labelText: '📏 Dozalash',
-                      hintText: 'Masalan: 500mg, 1 tabletka',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      prefixIcon: const Icon(Icons.straighten),
-                      filled: true,
-                      fillColor: Colors.grey.withValues(alpha: 0.05),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Dozalashni kiriting';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Kunlik ichish soni
-                  Card(
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Row(
+                        // Dosage
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(Icons.schedule, color: Colors.blue),
-                              SizedBox(width: 8),
-                              Text(
-                                '🕐 Kunlik ichish soni',
+                              const Text(
+                                'Dozasi',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF1F2937),
                                 ),
+                              ),
+                              const SizedBox(height: 8),
+                              TextFormField(
+                                controller: _dosageController,
+                                decoration: const InputDecoration(
+                                  hintText: 'Masalan: 500mg, 1 tablet',
+                                  prefixIcon: Icon(
+                                    Icons.science_outlined,
+                                    color: Color(0xFF6366F1),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Dozani kiriting';
+                                  }
+                                  return null;
+                                },
                               ),
                             ],
                           ),
-                          const SizedBox(height: 12),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                        ),
+
+                        // Frequency
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              IconButton(
-                                onPressed: () {
-                                  if (_frequency > 1) {
-                                    setState(() {
-                                      _frequency--;
-                                    });
-                                  }
-                                },
-                                icon: const Icon(
-                                  Icons.remove_circle_outline,
-                                  size: 32,
+                              const Text(
+                                'Kunlik dozalar soni',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF1F2937),
                                 ),
-                                color: _frequency > 1
-                                    ? Colors.red
-                                    : Colors.grey,
                               ),
+                              const SizedBox(height: 8),
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 8,
+                                  horizontal: 12,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.blue.withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(
-                                  '$_frequency marta',
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue,
+                                  color: const Color(0xFFF9FAFB),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: const Color(0xFFE5E7EB),
                                   ),
                                 ),
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _frequency++;
-                                  });
-                                },
-                                icon: const Icon(
-                                  Icons.add_circle_outline,
-                                  size: 32,
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.repeat,
+                                      color: Color(0xFF6366F1),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    const Text(
+                                      'Kuniga',
+                                      style: TextStyle(
+                                        color: Color(0xFF6B7280),
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    IconButton(
+                                      onPressed: () {
+                                        if (_frequency > 1) {
+                                          setState(() {
+                                            _frequency--;
+                                          });
+                                        }
+                                      },
+                                      icon: const Icon(
+                                        Icons.remove_circle_outline,
+                                      ),
+                                      color: const Color(0xFF6366F1),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 8,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF6366F1),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        '$_frequency',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                    IconButton(
+                                      onPressed: () {
+                                        if (_frequency < 10) {
+                                          setState(() {
+                                            _frequency++;
+                                          });
+                                        }
+                                      },
+                                      icon: const Icon(
+                                        Icons.add_circle_outline,
+                                      ),
+                                      color: const Color(0xFF6366F1),
+                                    ),
+                                    const Text(
+                                      'marta',
+                                      style: TextStyle(
+                                        color: Color(0xFF6B7280),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                color: Colors.green,
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
+                        ),
 
-                  // Vaqt tanlash
-                  Card(
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Row(
+                        // Times section
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(Icons.access_time, color: Colors.orange),
-                              SizedBox(width: 8),
-                              Text(
-                                '⏰ Vaqt tanlash',
+                              const Text(
+                                'Ichish vaqtlari',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF1F2937),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF9FAFB),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: const Color(0xFFE5E7EB),
+                                  ),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.schedule,
+                                          color: Color(0xFF6366F1),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        const Text(
+                                          'Vaqtlar',
+                                          style: TextStyle(
+                                            color: Color(0xFF6B7280),
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                        ElevatedButton.icon(
+                                          onPressed: _selectTime,
+                                          icon: const Icon(Icons.add, size: 18),
+                                          label: const Text('Vaqt qo\'shish'),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: const Color(
+                                              0xFF6366F1,
+                                            ),
+                                            foregroundColor: Colors.white,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 8,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    if (_selectedTimes.isNotEmpty) ...[
+                                      const SizedBox(height: 16),
+                                      Wrap(
+                                        spacing: 8,
+                                        runSpacing: 8,
+                                        children: _selectedTimes
+                                            .asMap()
+                                            .entries
+                                            .map((entry) {
+                                              final index = entry.key;
+                                              final time = entry.value;
+                                              return Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 8,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  color: const Color(
+                                                    0xFF6366F1,
+                                                  ).withValues(alpha: 0.1),
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  border: Border.all(
+                                                    color: const Color(
+                                                      0xFF6366F1,
+                                                    ).withValues(alpha: 0.3),
+                                                  ),
+                                                ),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                      time.format(context),
+                                                      style: const TextStyle(
+                                                        color: Color(
+                                                          0xFF6366F1,
+                                                        ),
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 8),
+                                                    GestureDetector(
+                                                      onTap: () =>
+                                                          _removeTime(index),
+                                                      child: const Icon(
+                                                        Icons.close,
+                                                        size: 16,
+                                                        color: Color(
+                                                          0xFF6366F1,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            })
+                                            .toList(),
+                                      ),
+                                    ] else ...[
+                                      const SizedBox(height: 16),
+                                      Container(
+                                        padding: const EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFF3F4F6),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: const Row(
+                                          children: [
+                                            Icon(
+                                              Icons.info_outline,
+                                              color: Color(0xFF9CA3AF),
+                                              size: 20,
+                                            ),
+                                            SizedBox(width: 8),
+                                            Text(
+                                              'Kamida bitta vaqt tanlang',
+                                              style: TextStyle(
+                                                color: Color(0xFF9CA3AF),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ],
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 12),
+                        ),
 
-                          // Selected times
-                          if (_selectedTimes.isNotEmpty) ...[
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              children: _selectedTimes.asMap().entries.map((
-                                entry,
-                              ) {
-                                final index = entry.key;
-                                final time = entry.value;
-                                return Chip(
-                                  label: Text(
-                                    time.format(context),
-                                    style: const TextStyle(color: Colors.white),
+                        // Notes
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 24),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Izohlar (ixtiyoriy)',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF1F2937),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              TextFormField(
+                                controller: _notesController,
+                                maxLines: 3,
+                                decoration: const InputDecoration(
+                                  hintText: 'Qo\'shimcha ma\'lumotlar...',
+                                  prefixIcon: Padding(
+                                    padding: EdgeInsets.only(bottom: 32),
+                                    child: Icon(
+                                      Icons.note_outlined,
+                                      color: Color(0xFF6366F1),
+                                    ),
                                   ),
-                                  backgroundColor: Colors.blue,
-                                  deleteIcon: const Icon(
-                                    Icons.close,
-                                    color: Colors.white,
-                                    size: 18,
-                                  ),
-                                  onDeleted: () => _removeTime(index),
-                                );
-                              }).toList(),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Save button
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: _saveMedication,
+                            icon: const Icon(Icons.save, size: 20),
+                            label: const Text(
+                              'Dori qo\'shish',
+                              style: TextStyle(fontSize: 16),
                             ),
-                            const SizedBox(height: 12),
-                          ],
-
-                          // Add time button
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton.icon(
-                              onPressed: _selectTime,
-                              icon: const Icon(Icons.add),
-                              label: const Text('Vaqt qo\'shish'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.orange,
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF10B981),
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Eslatma
-                  TextFormField(
-                    controller: _notesController,
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                      labelText: '📝 Eslatma (ixtiyoriy)',
-                      hintText: 'Qo\'shimcha ma\'lumotlar...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      prefixIcon: const Icon(Icons.note),
-                      filled: true,
-                      fillColor: Colors.grey.withValues(alpha: 0.05),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-
-                  // Saqlash tugmasi
-                  SizedBox(
-                    width: double.infinity,
-                    height: 56,
-                    child: ElevatedButton.icon(
-                      onPressed: _saveMedication,
-                      icon: const Icon(Icons.save),
-                      label: const Text(
-                        '💾 Saqlash',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
                         ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 3,
-                      ),
+
+                        const SizedBox(height: 32),
+                      ]),
                     ),
                   ),
-
-                  const SizedBox(height: 20),
                 ],
               ),
             ),

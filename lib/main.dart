@@ -25,7 +25,73 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: '💊 Medication Reminder',
-      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF6366F1), // Indigo-500
+          brightness: Brightness.light,
+        ),
+        appBarTheme: const AppBarTheme(
+          elevation: 0,
+          centerTitle: true,
+          backgroundColor: Color(0xFF6366F1),
+          foregroundColor: Colors.white,
+          titleTextStyle: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Color(0xFF6366F1), width: 2),
+          ),
+          filled: true,
+          fillColor: const Color(0xFFF9FAFB),
+        ),
+        textTheme: const TextTheme(
+          headlineLarge: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF1F2937),
+          ),
+          headlineMedium: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF1F2937),
+          ),
+          titleLarge: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF1F2937),
+          ),
+          titleMedium: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF374151),
+          ),
+          bodyLarge: TextStyle(fontSize: 16, color: Color(0xFF374151)),
+          bodyMedium: TextStyle(fontSize: 14, color: Color(0xFF6B7280)),
+        ),
+      ),
       home: const MainScreen(),
     );
   }
@@ -35,10 +101,10 @@ class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<MainScreen> createState() => MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = [
@@ -53,191 +119,321 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        title: const Text('Medication Reminder'),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
+        title: const Text('💊 Medication Reminder'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () async {
-              final pending = await _notificationService
-                  .getPendingNotifications();
-              if (!mounted) return;
-              showModalBottomSheet(
-                context: context,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                ),
-                builder: (context) {
-                  if (pending.isEmpty) {
-                    return SizedBox(
-                      height: 200,
-                      child: Center(
-                        child: Text(
-                          'Hech qanday rejalashtirilgan eslatma yo‘q',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                    );
-                  }
-                  return ListView(
-                    padding: const EdgeInsets.all(16),
-                    shrinkWrap: true,
-                    children: [
-                      const Text(
-                        'Rejalashtirilgan bildirishnomalar',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      ...pending.map((n) {
-                        String timeStr = '';
-                        try {
-                          final payload = n.payload != null ? n.payload! : '';
-                          final data = payload.isNotEmpty
-                              ? Map<String, dynamic>.from(jsonDecode(payload))
-                              : {};
-                          if (data.containsKey('time')) {
-                            timeStr = data['time'];
-                          }
-                        } catch (_) {}
-                        return Card(
-                          child: ListTile(
-                            leading: const Icon(
-                              Icons.notifications_active,
-                              color: Colors.blue,
-                            ),
-                            title: Text(n.title ?? 'Bildirishnoma'),
-                            subtitle: Text(n.body ?? ''),
-                            trailing: timeStr.isNotEmpty ? Text(timeStr) : null,
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.notifications_outlined, size: 28),
+                onPressed: () async {
+                  final pending = await _notificationService
+                      .getPendingNotifications();
+                  if (!mounted) return;
+                  if (!context.mounted) return;
+                  showModalBottomSheet(
+                    context: context,
+                    backgroundColor: Colors.transparent,
+                    isScrollControlled: true,
+                    builder: (context) {
+                      return Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(24),
                           ),
-                        );
-                      }).toList(),
-                    ],
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(top: 12),
+                              width: 40,
+                              height: 4,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFE5E7EB),
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: const Color(
+                                            0xFF6366F1,
+                                          ).withValues(alpha: 0.1),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: const Icon(
+                                          Icons.notifications_active,
+                                          color: Color(0xFF6366F1),
+                                          size: 20,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      const Text(
+                                        'Rejalashtirilgan bildirishnomalar',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600,
+                                          color: Color(0xFF1F2937),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 16),
+                                  if (pending.isEmpty)
+                                    Container(
+                                      padding: const EdgeInsets.all(24),
+                                      child: Column(
+                                        children: [
+                                          Icon(
+                                            Icons.notifications_off_outlined,
+                                            size: 48,
+                                            color: const Color(0xFF9CA3AF),
+                                          ),
+                                          const SizedBox(height: 12),
+                                          Text(
+                                            'Hech qanday rejalashtirilgan eslatma yo\'q',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: const Color(0xFF6B7280),
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  else
+                                    ...pending.map((n) {
+                                      String timeStr = '';
+                                      try {
+                                        final payload = n.payload != null
+                                            ? n.payload!
+                                            : '';
+                                        final data = payload.isNotEmpty
+                                            ? Map<String, dynamic>.from(
+                                                jsonDecode(payload),
+                                              )
+                                            : {};
+                                        if (data.containsKey('time')) {
+                                          timeStr = data['time'];
+                                        }
+                                      } catch (_) {}
+                                      return Container(
+                                        margin: const EdgeInsets.only(
+                                          bottom: 12,
+                                        ),
+                                        padding: const EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFF9FAFB),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          border: Border.all(
+                                            color: const Color(0xFFE5E7EB),
+                                          ),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.all(8),
+                                              decoration: BoxDecoration(
+                                                color: const Color(
+                                                  0xFF10B981,
+                                                ).withValues(alpha: 0.1),
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              child: const Icon(
+                                                Icons.schedule,
+                                                color: Color(0xFF10B981),
+                                                size: 20,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 12),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    n.title ?? 'Bildirishnoma',
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Color(0xFF1F2937),
+                                                    ),
+                                                  ),
+                                                  if (n.body != null &&
+                                                      n.body!.isNotEmpty)
+                                                    Text(
+                                                      n.body!,
+                                                      style: const TextStyle(
+                                                        fontSize: 12,
+                                                        color: Color(
+                                                          0xFF6B7280,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                ],
+                                              ),
+                                            ),
+                                            if (timeStr.isNotEmpty)
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 4,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  color: const Color(
+                                                    0xFF6366F1,
+                                                  ).withValues(alpha: 0.1),
+                                                  borderRadius:
+                                                      BorderRadius.circular(6),
+                                                ),
+                                                child: Text(
+                                                  timeStr,
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Color(0xFF6366F1),
+                                                  ),
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      );
+                                    }),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   );
                 },
-              );
-            },
+              ),
+              if (_hasActiveNotifications)
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: Container(
+                    width: 8,
+                    height: 8,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFEF4444),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+            ],
           ),
         ],
       ),
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            // Drawer header
-            DrawerHeader(
-              decoration: const BoxDecoration(
-                color: Colors.blue,
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Colors.blue, Colors.lightBlue],
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+            ),
+          ),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              // Drawer header
+              Container(
+                padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: const Icon(
+                        Icons.medication_outlined,
+                        size: 32,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      '💊 Medication Reminder',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Sog\'liq - eng qimmat boylik',
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.8),
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.white,
-                    child: Icon(Icons.medication, size: 40, color: Colors.blue),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    '💊 Medication Reminder',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+
+              // Drawer menu items
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
+                  children: [
+                    _buildDrawerItem(
+                      icon: Icons.home_outlined,
+                      title: '🏠 Bosh sahifa',
+                      subtitle: 'Dorilar ro\'yxati va navbatdagi doza',
+                      onTap: () => _navigateToScreen(0),
                     ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    'Sog\'liq - eng qimmat boylik',
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.8),
-                      fontSize: 12,
+                    _buildDrawerItem(
+                      icon: Icons.add_circle_outline,
+                      title: '➕ Dori qo\'shish',
+                      subtitle: 'Yangi dori qo\'shish',
+                      onTap: () => _navigateToAddMedication(),
                     ),
-                  ),
-                ],
+                    _buildDrawerItem(
+                      icon: Icons.settings_outlined,
+                      title: '⚙️ Sozlamalar',
+                      subtitle: 'Ilova sozlamalari',
+                      onTap: () => _navigateToScreen(2),
+                    ),
+                    _buildDrawerItem(
+                      icon: Icons.info_outline,
+                      title: 'ℹ️ Ilova haqida',
+                      subtitle: 'Ilova va ishlab chiquvchi haqida',
+                      onTap: () => _navigateToScreen(3),
+                    ),
+                  ],
+                ),
               ),
-            ),
 
-            // Drawer menu items
-            _buildDrawerItem(
-              icon: Icons.home,
-              title: '🏠 Bosh sahifa',
-              subtitle: 'Dorilar ro\'yxati va navbatdagi doza',
-              onTap: () => _navigateToScreen(0),
-            ),
-
-            _buildDrawerItem(
-              icon: Icons.add_circle,
-              title: '➕ Dori qo\'shish',
-              subtitle: 'Yangi dori qo\'shish',
-              onTap: () => _navigateToAddMedication(),
-            ),
-
-            _buildDrawerItem(
-              icon: Icons.settings,
-              title: '⚙️ Sozlamalar',
-              subtitle: 'Ilova sozlamalari',
-              onTap: () => _navigateToScreen(2),
-            ),
-
-            _buildDrawerItem(
-              icon: Icons.info,
-              title: 'ℹ️ Ilova haqida',
-              subtitle: 'Ilova va ishlab chiquvchi haqida',
-              onTap: () => _navigateToScreen(3),
-            ),
-
-            const Divider(),
-
-            // Additional menu items
-            _buildDrawerItem(
-              icon: Icons.history,
-              title: '📊 Tarix',
-              subtitle: 'Dorilar ichish tarixi',
-              onTap: () {
-                // TODO: Navigate to history screen
-              },
-            ),
-
-            _buildDrawerItem(
-              icon: Icons.analytics,
-              title: '📈 Statistika',
-              subtitle: 'Dorilar ichish statistikasi',
-              onTap: () {
-                // TODO: Navigate to statistics screen
-              },
-            ),
-
-            const Divider(),
-
-            // Help and support
-            _buildDrawerItem(
-              icon: Icons.help,
-              title: '❓ Yordam',
-              subtitle: 'Foydalanish bo\'yicha yordam',
-              onTap: () {
-                // TODO: Navigate to help screen
-              },
-            ),
-
-            _buildDrawerItem(
-              icon: Icons.feedback,
-              title: '💬 Fikr bildirish',
-              subtitle: 'Ilova haqida fikr bildiring',
-              onTap: () {
-                // TODO: Navigate to feedback screen
-              },
-            ),
-          ],
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
       body: IndexedStack(index: _currentIndex, children: _screens),
@@ -250,11 +446,32 @@ class _MainScreenState extends State<MainScreen> {
     required String subtitle,
     required VoidCallback onTap,
   }) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.blue),
-      title: Text(title),
-      subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
-      onTap: onTap,
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: ListTile(
+        leading: Icon(icon, color: Colors.white, size: 24),
+        title: Text(
+          title,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: TextStyle(
+            color: Colors.white.withValues(alpha: 0.8),
+            fontSize: 12,
+          ),
+        ),
+        onTap: onTap,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      ),
     );
   }
 
@@ -262,29 +479,36 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       _currentIndex = index;
     });
-    Navigator.pop(context); // Close drawer
+    Navigator.pop(context);
   }
 
-  void _navigateToAddMedication() async {
-    Navigator.pop(context); // Close drawer first
+  void _navigateToAddMedication() {
+    Navigator.pop(context);
+    setState(() {
+      _currentIndex = 1;
+    });
+  }
 
-    // Navigate to AddMedicationScreen and wait for result
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const AddMedicationScreen()),
-    );
+  bool _hasActiveNotifications = false;
 
-    // If medication was added successfully, refresh HomeScreen
-    if (result == true) {
+  @override
+  void initState() {
+    super.initState();
+    _checkActiveNotifications();
+  }
+
+  Future<void> _checkActiveNotifications() async {
+    final pending = await _notificationService.getPendingNotifications();
+    if (mounted) {
       setState(() {
-        _currentIndex = 0; // Go back to home screen
+        _hasActiveNotifications = pending.isNotEmpty;
       });
-
-      // Force refresh of HomeScreen
-      if (_screens[0] is HomeScreen) {
-        // The HomeScreen will automatically refresh when it becomes visible
-        // due to the IndexedStack behavior
-      }
     }
+  }
+
+  void setCurrentIndex(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
   }
 }

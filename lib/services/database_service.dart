@@ -64,7 +64,6 @@ class DatabaseService {
         isActive: medication.isActive,
       );
       await _notificationService.scheduleMedicationReminder(medicationWithId);
-      print('Scheduled notifications for medication: ${medication.name}');
     }
 
     return id;
@@ -110,7 +109,6 @@ class DatabaseService {
     if (result > 0) {
       await _notificationService.cancelMedicationReminders(medication.id!);
       await _notificationService.scheduleMedicationReminder(medication);
-      print('Rescheduled notifications for medication: ${medication.name}');
     }
 
     return result;
@@ -129,7 +127,6 @@ class DatabaseService {
     // Cancel notifications for the deleted medication
     if (result > 0) {
       await _notificationService.cancelMedicationReminders(id);
-      print('Cancelled notifications for deleted medication ID: $id');
     }
 
     return result;
