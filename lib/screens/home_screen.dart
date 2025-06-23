@@ -709,6 +709,460 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Future<void> _showEditDialog(Medication medication) async {
-    // Implement the logic to show the edit dialog
+    final nameController = TextEditingController(text: medication.name);
+    final dosageController = TextEditingController(text: medication.dosage);
+    List<TimeOfDay> selectedTimes = [];
+    try {
+      final List<dynamic> timesList = jsonDecode(medication.times);
+      selectedTimes = timesList
+          .map(
+            (timeMap) =>
+                TimeOfDay(hour: timeMap['hour'], minute: timeMap['minute']),
+          )
+          .toList();
+    } catch (_) {
+      selectedTimes = [];
+    }
+    final formKey = GlobalKey<FormState>();
+    bool isSaving = false;
+
+    Future<void> selectTime() async {
+      final TimeOfDay? picked = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+        builder: (context, child) {
+          return Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: const ColorScheme.light(primary: Color(0xFF6366F1)),
+            ),
+            child: child!,
+          );
+        },
+      );
+      if (picked != null) {
+        if (!selectedTimes.contains(picked)) {
+          selectedTimes.add(picked);
+          selectedTimes.sort(
+            (a, b) => a.hour * 60 + a.minute - (b.hour * 60 + b.minute),
+          );
+        }
+      }
+    }
+
+    void removeTime(int index) {
+      selectedTimes.removeAt(index);
+    }
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
+              elevation: 16,
+              backgroundColor: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Title
+                        Container(
+                          padding: const EdgeInsets.only(
+                            top: 24,
+                            left: 24,
+                            right: 24,
+                            bottom: 8,
+                          ),
+                          child: const Text(
+                            "Dorini tahrirlash",
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF6366F1),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        // Name
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 4,
+                          ),
+                          child: TextFormField(
+                            controller: nameController,
+                            decoration: InputDecoration(
+                              labelText: "Dori nomi",
+                              hintText: "Masalan: Aspirin",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              prefixIcon: const Icon(
+                                Icons.medication_outlined,
+                                color: Color(0xFF6366F1),
+                              ),
+                            ),
+                            validator: (value) => value == null || value.isEmpty
+                                ? 'Nomini kiriting'
+                                : null,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        // Dosage
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 4,
+                          ),
+                          child: TextFormField(
+                            controller: dosageController,
+                            decoration: InputDecoration(
+                              labelText: "Dozasi",
+                              hintText: "Masalan: 500mg, 1 tablet",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              prefixIcon: const Icon(
+                                Icons.science_outlined,
+                                color: Color(0xFF6366F1),
+                              ),
+                            ),
+                            validator: (value) => value == null || value.isEmpty
+                                ? 'Dozasini kiriting'
+                                : null,
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        // Divider
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Divider(
+                            color: Colors.grey.shade200,
+                            thickness: 1,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        // Times section title
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.schedule,
+                                color: Color(0xFF6366F1),
+                              ),
+                              const SizedBox(width: 8),
+                              const Text(
+                                'Ichish vaqtlari',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF1F2937),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        // Times list and add button
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
+                                children: selectedTimes.isNotEmpty
+                                    ? selectedTimes.asMap().entries.map((
+                                        entry,
+                                      ) {
+                                        final index = entry.key;
+                                        final time = entry.value;
+                                        return Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 14,
+                                            vertical: 8,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Color(
+                                                  0xFF6366F1,
+                                                ).withValues(alpha: 0.15),
+                                                Color(
+                                                  0xFF8B5CF6,
+                                                ).withValues(alpha: 0.15),
+                                              ],
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              24,
+                                            ),
+                                            border: Border.all(
+                                              color: const Color(
+                                                0xFF6366F1,
+                                              ).withValues(alpha: 0.18),
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black.withValues(
+                                                  alpha: 0.03,
+                                                ),
+                                                blurRadius: 4,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                time.format(context),
+                                                style: const TextStyle(
+                                                  color: Color(0xFF6366F1),
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 6),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    removeTime(index);
+                                                  });
+                                                },
+                                                child: const Icon(
+                                                  Icons.close,
+                                                  size: 16,
+                                                  color: Color(0xFF6366F1),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      }).toList()
+                                    : [
+                                        Container(
+                                          padding: const EdgeInsets.all(12),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFF3F4F6),
+                                            borderRadius: BorderRadius.circular(
+                                              16,
+                                            ),
+                                          ),
+                                          child: const Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.info_outline,
+                                                color: Color(0xFF9CA3AF),
+                                                size: 20,
+                                              ),
+                                              SizedBox(width: 8),
+                                              Text(
+                                                'Kamida bitta vaqt tanlang',
+                                                style: TextStyle(
+                                                  color: Color(0xFF9CA3AF),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                              ),
+                              const SizedBox(height: 16),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton.icon(
+                                  onPressed: () async {
+                                    await selectTime();
+                                    setState(() {});
+                                  },
+                                  icon: const Icon(Icons.add, size: 20),
+                                  label: const Text(
+                                    "Vaqt qo'shish",
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 14,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    elevation: 0,
+                                    backgroundColor: const Color(0xFF6366F1),
+                                    foregroundColor: Colors.white,
+                                    textStyle: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        // Actions
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 8,
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: OutlinedButton(
+                                  onPressed: isSaving
+                                      ? null
+                                      : () {
+                                          Navigator.of(context).pop();
+                                        },
+                                  style: OutlinedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 14,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                    side: const BorderSide(
+                                      color: Color(0xFF6366F1),
+                                    ),
+                                  ),
+                                  child: const Text(
+                                    'Bekor',
+                                    style: TextStyle(
+                                      color: Color(0xFF6366F1),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: isSaving
+                                      ? null
+                                      : () async {
+                                          if (formKey.currentState!
+                                              .validate()) {
+                                            if (selectedTimes.isEmpty) {
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                    '⚠️ Kamida bitta vaqt tanlang',
+                                                  ),
+                                                  backgroundColor:
+                                                      Colors.orange,
+                                                ),
+                                              );
+                                              return;
+                                            }
+                                            setState(() => isSaving = true);
+                                            try {
+                                              final timesJson = jsonEncode(
+                                                selectedTimes
+                                                    .map(
+                                                      (time) => {
+                                                        'hour': time.hour,
+                                                        'minute': time.minute,
+                                                      },
+                                                    )
+                                                    .toList(),
+                                              );
+                                              final updatedMedication =
+                                                  medication.copyWith(
+                                                    name: nameController.text
+                                                        .trim(),
+                                                    dosage: dosageController
+                                                        .text
+                                                        .trim(),
+                                                    times: timesJson,
+                                                  );
+                                              await _databaseService
+                                                  .updateMedication(
+                                                    updatedMedication,
+                                                  );
+                                              if (!mounted) return;
+                                              Navigator.of(context).pop();
+                                              await _loadData();
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                    '✅ Dori yangilandi!',
+                                                  ),
+                                                  backgroundColor: Colors.green,
+                                                ),
+                                              );
+                                            } catch (e) {
+                                              setState(() => isSaving = false);
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    '❌ Xatolik: $e',
+                                                  ),
+                                                  backgroundColor: Colors.red,
+                                                ),
+                                              );
+                                            }
+                                          }
+                                        },
+                                  style: ElevatedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 14,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                    backgroundColor: const Color(0xFF10B981),
+                                    foregroundColor: Colors.white,
+                                    textStyle: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  child: isSaving
+                                      ? const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Colors.white,
+                                          ),
+                                        )
+                                      : const Text(
+                                          'Saqlash',
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 }

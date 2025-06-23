@@ -13,7 +13,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _notificationsEnabled = true;
   bool _soundEnabled = true;
   bool _vibrationEnabled = true;
-  String _selectedLanguage = 'O\'zbek';
   final NotificationService _notificationService = NotificationService();
 
   @override
@@ -100,18 +99,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                // Language settings
-                _buildSectionHeader('🌐 Til sozlamalari'),
-                _buildSettingsCard([
-                  _buildSettingsTile(
-                    icon: Icons.language,
-                    title: 'Til tanlash',
-                    subtitle: _selectedLanguage,
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onTap: () => _showLanguageDialog(),
-                  ),
-                ]),
-
                 // Theme settings
                 _buildSectionHeader('🎨 Tema sozlamalari'),
                 _buildSettingsCard([
@@ -209,38 +196,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         );
                       }
                     },
-                  ),
-                ]),
-
-                // Data settings
-                _buildSectionHeader('💾 Ma\'lumotlar sozlamalari'),
-                _buildSettingsCard([
-                  _buildSettingsTile(
-                    icon: Icons.backup,
-                    title: 'Ma\'lumotlarni saqlash',
-                    subtitle: 'Cloud ga saqlash',
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onTap: () {
-                      // TODO: Implement backup
-                    },
-                  ),
-                  _buildSettingsTile(
-                    icon: Icons.restore,
-                    title: 'Ma\'lumotlarni tiklash',
-                    subtitle: 'Cloud dan tiklash',
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onTap: () {
-                      // TODO: Implement restore
-                    },
-                  ),
-                  _buildSettingsTile(
-                    icon: Icons.delete_forever,
-                    title: 'Barcha ma\'lumotlarni o\'chirish',
-                    subtitle: 'Dikkat! Bu amalni qaytarib bo\'lmaydi',
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onTap: () => _showDeleteConfirmation(),
-                    iconColor: const Color(0xFFEF4444),
-                    titleColor: const Color(0xFFEF4444),
                   ),
                 ]),
 
@@ -379,79 +334,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         onChanged: onChanged,
         activeColor: const Color(0xFF6366F1),
       ),
-    );
-  }
-
-  void _showLanguageDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Til tanlash'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildLanguageOption('O\'zbek'),
-              _buildLanguageOption('Русский'),
-              _buildLanguageOption('English'),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildLanguageOption(String language) {
-    return ListTile(
-      title: Text(language),
-      trailing: _selectedLanguage == language
-          ? const Icon(Icons.check, color: Colors.green)
-          : null,
-      onTap: () {
-        setState(() {
-          _selectedLanguage = language;
-        });
-        Navigator.pop(context);
-      },
-    );
-  }
-
-  void _showDeleteConfirmation() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('⚠️ Diqqat!'),
-          content: const Text(
-            'Barcha ma\'lumotlar o\'chiriladi. Bu amalni qaytarib bo\'lmaydi. Davom etasizmi?',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Bekor qilish'),
-            ),
-            TextButton(
-              onPressed: () async {
-                // Cancel all notifications
-                await _notificationService.cancelAllNotifications();
-
-                // TODO: Implement delete all data
-                Navigator.pop(context);
-                if (mounted && context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('🗑️ Barcha ma\'lumotlar o\'chirildi'),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-              },
-              style: TextButton.styleFrom(foregroundColor: Colors.red),
-              child: const Text('O\'chirish'),
-            ),
-          ],
-        );
-      },
     );
   }
 }

@@ -79,7 +79,7 @@ class AboutScreen extends StatelessWidget {
                 _buildSectionHeader('💊 Ilova haqida'),
                 _buildInfoCard(
                   'Nomi',
-                  'Medication Reminder',
+                  'Dori Eslatmasi',
                   Icons.medication_outlined,
                 ),
                 _buildInfoCard('Versiya', '1.0.0', Icons.info_outline),
@@ -91,33 +91,17 @@ class AboutScreen extends StatelessWidget {
 
                 const SizedBox(height: 24),
 
-                // Developer info
-                _buildSectionHeader('👨‍💻 Ishlab chiquvchi'),
-                _buildInfoCard('Ism', 'Eldor', Icons.person_outline),
-                _buildInfoCard('Kasb', 'Flutter Developer', Icons.work_outline),
-                _buildInfoCard('Tajriba', '2+ yil', Icons.trending_up),
-
-                const SizedBox(height: 24),
-
                 // Contact
                 _buildSectionHeader('📞 Bog\'lanish'),
                 _buildContactCard(
                   'Email',
-                  'eldor@example.com',
+                  'info@medical_reminder.uz',
                   Icons.email_outlined,
-                  () => _launchEmail('eldor@example.com'),
                 ),
                 _buildContactCard(
                   'Telegram',
-                  '@eldor_dev',
+                  '@medical_reminder_uz',
                   Icons.telegram,
-                  () => _launchTelegram('@eldor_dev'),
-                ),
-                _buildContactCard(
-                  'GitHub',
-                  'github.com/eldor',
-                  Icons.code,
-                  () => _launchGitHub('github.com/eldor'),
                 ),
 
                 const SizedBox(height: 24),
@@ -180,101 +164,6 @@ class AboutScreen extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(height: 24),
-
-                // Updates
-                _buildSectionHeader('🆕 So\'nggi yangilanishlar'),
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF1F2937).withValues(alpha: 0.08),
-                        blurRadius: 16,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: const Color(
-                                0xFF10B981,
-                              ).withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const Icon(
-                              Icons.new_releases,
-                              color: Color(0xFF10B981),
-                              size: 20,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'v1.0.0',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xFF1F2937),
-                                ),
-                              ),
-                              Text(
-                                '2025-01-15',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Color(0xFF6B7280),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Column(
-                        children: [
-                          _buildUpdateItem('✅ Ilova yaratildi'),
-                          _buildUpdateItem('✅ Asosiy funksiyalar qo\'shildi'),
-                          _buildUpdateItem('✅ Drawer menu yaratildi'),
-                          _buildUpdateItem('✅ 4 ta asosiy sahifa qo\'shildi'),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 24),
-
-                // Useful links
-                _buildSectionHeader('🔗 Foydali havolalar'),
-                _buildLinkCard(
-                  'Flutter Documentation',
-                  'flutter.dev/docs',
-                  Icons.library_books_outlined,
-                  () => _launchUrl('https://flutter.dev/docs'),
-                ),
-                _buildLinkCard(
-                  'Dart Language',
-                  'dart.dev',
-                  Icons.code,
-                  () => _launchUrl('https://dart.dev'),
-                ),
-                _buildLinkCard(
-                  'Material Design',
-                  'material.io/design',
-                  Icons.design_services_outlined,
-                  () => _launchUrl('https://material.io/design'),
-                ),
-
                 const SizedBox(height: 32),
 
                 // Footer
@@ -307,7 +196,7 @@ class AboutScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       const Text(
-                        '💊 Medication Reminder',
+                        '💊 Dori Eslatmasi',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -404,12 +293,7 @@ class AboutScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildContactCard(
-    String label,
-    String value,
-    IconData icon,
-    VoidCallback onTap,
-  ) {
+  Widget _buildContactCard(String label, String value, IconData icon) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
@@ -450,102 +334,7 @@ class AboutScreen extends StatelessWidget {
           size: 16,
           color: Color(0xFF6B7280),
         ),
-        onTap: onTap,
       ),
     );
-  }
-
-  Widget _buildLinkCard(
-    String title,
-    String subtitle,
-    IconData icon,
-    VoidCallback onTap,
-  ) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF1F2937).withValues(alpha: 0.08),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(16),
-        leading: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: const Color(0xFF8B5CF6).withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(icon, color: const Color(0xFF8B5CF6), size: 20),
-        ),
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Color(0xFF1F2937),
-          ),
-        ),
-        subtitle: Text(
-          subtitle,
-          style: const TextStyle(fontSize: 14, color: Color(0xFF6B7280)),
-        ),
-        trailing: const Icon(
-          Icons.arrow_forward_ios,
-          size: 16,
-          color: Color(0xFF6B7280),
-        ),
-        onTap: onTap,
-      ),
-    );
-  }
-
-  static Widget _buildUpdateItem(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        children: [
-          const SizedBox(width: 4),
-          Text(
-            text,
-            style: const TextStyle(fontSize: 14, color: Color(0xFF374151)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _launchEmail(String email) async {
-    final Uri emailUri = Uri(scheme: 'mailto', path: email);
-    if (await canLaunchUrl(emailUri)) {
-      await launchUrl(emailUri);
-    }
-  }
-
-  void _launchTelegram(String username) async {
-    final Uri telegramUri = Uri.parse('https://t.me/$username');
-    if (await canLaunchUrl(telegramUri)) {
-      await launchUrl(telegramUri);
-    }
-  }
-
-  void _launchGitHub(String username) async {
-    final Uri githubUri = Uri.parse('https://$username');
-    if (await canLaunchUrl(githubUri)) {
-      await launchUrl(githubUri);
-    }
-  }
-
-  void _launchUrl(String url) async {
-    final Uri uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    }
   }
 }

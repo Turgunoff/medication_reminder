@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: '💊 Medication Reminder',
+      title: '💊 Dori Eslatmasi',
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
@@ -121,7 +121,7 @@ class MainScreenState extends State<MainScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        title: const Text('💊 Medication Reminder'),
+        title: const Text('💊 Dori Eslatmasi'),
         actions: [
           Stack(
             children: [
@@ -375,7 +375,7 @@ class MainScreenState extends State<MainScreen> {
                     ),
                     const SizedBox(height: 16),
                     const Text(
-                      '💊 Medication Reminder',
+                      '💊 Dori Eslatmasi',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
