@@ -753,6 +753,8 @@ class _HomeScreenState extends State<HomeScreen>
       selectedTimes.removeAt(index);
     }
 
+    final messenger = ScaffoldMessenger.of(context);
+
     await showDialog(
       context: context,
       barrierDismissible: false,
@@ -1056,9 +1058,7 @@ class _HomeScreenState extends State<HomeScreen>
                                           if (formKey.currentState!
                                               .validate()) {
                                             if (selectedTimes.isEmpty) {
-                                              ScaffoldMessenger.of(
-                                                context,
-                                              ).showSnackBar(
+                                              messenger.showSnackBar(
                                                 const SnackBar(
                                                   content: Text(
                                                     '⚠️ Kamida bitta vaqt tanlang',
@@ -1090,16 +1090,14 @@ class _HomeScreenState extends State<HomeScreen>
                                                         .trim(),
                                                     times: timesJson,
                                                   );
+                                              Navigator.of(context).pop();
                                               await _databaseService
                                                   .updateMedication(
                                                     updatedMedication,
                                                   );
-                                              if (!mounted) return;
-                                              Navigator.of(context).pop();
                                               await _loadData();
-                                              ScaffoldMessenger.of(
-                                                context,
-                                              ).showSnackBar(
+                                              if (!mounted) return;
+                                              messenger.showSnackBar(
                                                 const SnackBar(
                                                   content: Text(
                                                     '✅ Dori yangilandi!',
@@ -1109,16 +1107,16 @@ class _HomeScreenState extends State<HomeScreen>
                                               );
                                             } catch (e) {
                                               setState(() => isSaving = false);
-                                              ScaffoldMessenger.of(
-                                                context,
-                                              ).showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                    '❌ Xatolik: $e',
+                                              if (mounted) {
+                                                messenger.showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      '❌ Xatolik: $e',
+                                                    ),
+                                                    backgroundColor: Colors.red,
                                                   ),
-                                                  backgroundColor: Colors.red,
-                                                ),
-                                              );
+                                                );
+                                              }
                                             }
                                           }
                                         },
