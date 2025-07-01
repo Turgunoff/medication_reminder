@@ -1,15 +1,16 @@
 # 💊 Medication Reminder App
 
 <div align="center">
-  <img src="screenshots/home.png" alt="Bosh sahifa" width="22%"/>
-  <img src="screenshots/add_medication.png" alt="Dori qo'shish" width="22%"/>
-  <img src="screenshots/settings.png" alt="Sozlamalar" width="22%"/>
-  <img src="screenshots/about.png" alt="Ilova haqida" width="22%"/>
-  <br/>
+  <img src="screenshots/home.png" alt="Bosh sahifa" width="18%"/>
+  <img src="screenshots/add_medication.png" alt="Dori qo'shish" width="18%"/>
+  <img src="screenshots/settings.png" alt="Sozlamalar" width="18%"/>
+  <img src="screenshots/about.png" alt="Ilova haqida" width="18%"/>
+</div>
+<div align="center">
   <sub>
-    <b>Bosh sahifa</b> &nbsp;&nbsp;&nbsp;&nbsp;
-    <b>Dori qo'shish</b> &nbsp;&nbsp;&nbsp;&nbsp;
-    <b>Sozlamalar</b> &nbsp;&nbsp;&nbsp;&nbsp;
+    <b>Bosh sahifa</b> &nbsp;&nbsp;&nbsp;
+    <b>Dori qo'shish</b> &nbsp;&nbsp;&nbsp;
+    <b>Sozlamalar</b> &nbsp;&nbsp;&nbsp;
     <b>Ilova haqida</b>
   </sub>
 </div>
