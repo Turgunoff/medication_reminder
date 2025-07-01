@@ -25,8 +25,6 @@
 
 ### 🏠 Bosh sahifa
 
-![Bosh sahifa]
-
 - **Dorilar ro‘yxati**: Barcha dorilar va ularning navbatdagi doza vaqti.
 - **"Ichdim" belgilash**: Dori ichilganda tezda belgilash.
 - **Kunlik progress**: Bugungi dorilar ichilgan miqdorini ko‘rish.
@@ -34,8 +32,6 @@
 ---
 
 ### ➕ Dori qo‘shish
-
-![Dori qo'shish]
 
 - **Dori nomi va dozalash**: Yangi dori, miqdor va davomiylik kiritish.
 - **Vaqtlar**: Kunlik ichish vaqtlari va eslatmalar.
@@ -45,8 +41,6 @@
 
 ### ⚙️ Sozlamalar
 
-![Sozlamalar]
-
 - **Til tanlash**: O‘zbek, Rus, Ingliz tillari.
 - **Tema**: Yorug‘/Qorong‘i rejim.
 - **Bildirishnomalar**: Push notification va ovoz/vibratsiya sozlamalari.
@@ -54,8 +48,6 @@
 ---
 
 ### ℹ️ Ilova haqida
-
-![Ilova haqida]
 
 - **Versiya va ishlab chiquvchi**: Ilova versiyasi va dasturchi haqida ma’lumot.
 - **Bog‘lanish**: Email va telefon orqali aloqa.
