@@ -1,67 +1,97 @@
 # 💊 Medication Reminder App
 
+<div align="center">
+  <img src="screenshots/home.png" alt="Bosh sahifa" width="22%"/>
+  <img src="screenshots/add_medication.png" alt="Dori qo'shish" width="22%"/>
+  <img src="screenshots/settings.png" alt="Sozlamalar" width="22%"/>
+  <img src="screenshots/about.png" alt="Ilova haqida" width="22%"/>
+  <br/>
+  <sub>
+    <b>Bosh sahifa</b> &nbsp;&nbsp;&nbsp;&nbsp;
+    <b>Dori qo'shish</b> &nbsp;&nbsp;&nbsp;&nbsp;
+    <b>Sozlamalar</b> &nbsp;&nbsp;&nbsp;&nbsp;
+    <b>Ilova haqida</b>
+  </sub>
+</div>
+
 ## 📱 Ilova haqida
 
-Bu ilova foydalanuvchilarga dorilarini vaqtida ichishni eslatish uchun yaratilgan mobil ilova. Flutter framework yordamida ishlab chiqilgan.
+**Medication Reminder** — bu dorilarni o‘z vaqtida ichishni eslatib turuvchi, zamonaviy va qulay mobil ilova. Ilova yordamida siz sog‘lig‘ingizni nazorat qilishingiz, dorilarni qabul qilishni unutmasligingiz va barcha jarayonlarni boshqarishingiz mumkin.
 
-## 🧭 Asosiy menyu tuzilishi
+---
 
-| 🧭 Menyu         | 📄 Sahifa nomi        | 💬 Tavsif                                             |
-| ---------------- | --------------------- | ----------------------------------------------------- |
-| 🏠 Bosh sahifa   | `HomeScreen`          | Dorilar ro'yxati, navbatdagi doza, "Ichdim" belgilash |
-| ➕ Dori qo'shish | `AddMedicationScreen` | Yangi dori, vaqtlar va boshqa info qo'shiladi         |
-| ⚙️ Sozlamalar    | `SettingsScreen`      | Til, dark/light mode, notification sozlamalari        |
-| ℹ️ Ilova haqida  | `AboutScreen`         | Ilova versiyasi, ishlab chiquvchi haqida, bog'lanish  |
+## 🖼️ Ekranlar va imkoniyatlar
+
+### 🏠 Bosh sahifa
+
+![Bosh sahifa](screenshots/home.png)
+
+- **Dorilar ro‘yxati**: Barcha dorilar va ularning navbatdagi doza vaqti.
+- **"Ichdim" belgilash**: Dori ichilganda tezda belgilash.
+- **Kunlik progress**: Bugungi dorilar ichilgan miqdorini ko‘rish.
+
+---
+
+### ➕ Dori qo‘shish
+
+![Dori qo'shish](screenshots/add_medication.png)
+
+- **Dori nomi va dozalash**: Yangi dori, miqdor va davomiylik kiritish.
+- **Vaqtlar**: Kunlik ichish vaqtlari va eslatmalar.
+- **Saqlash**: Ma’lumotlarni bazaga saqlash va bildirishnoma sozlash.
+
+---
+
+### ⚙️ Sozlamalar
+
+![Sozlamalar](screenshots/settings.png)
+
+- **Til tanlash**: O‘zbek, Rus, Ingliz tillari.
+- **Tema**: Yorug‘/Qorong‘i rejim.
+- **Bildirishnomalar**: Push notification va ovoz/vibratsiya sozlamalari.
+
+---
+
+### ℹ️ Ilova haqida
+
+![Ilova haqida](screenshots/about.png)
+
+- **Versiya va ishlab chiquvchi**: Ilova versiyasi va dasturchi haqida ma’lumot.
+- **Bog‘lanish**: Email va telefon orqali aloqa.
+- **Litsenziya**: Open source va yangilanishlar tarixi.
+
+---
 
 ## 🎯 Asosiy funksiyalar
 
-### 🏠 Bosh sahifa (HomeScreen)
+- Dorilarni qo‘shish, tahrirlash va o‘chirish
+- Har bir dori uchun eslatma vaqtlari
+- Bildirishnomalar (push notification)
+- Kunlik progress va statistikalar
+- Ko‘p tilli interfeys (O‘zbek, Rus, Ingliz)
+- Qorong‘i va yorug‘ rejim
 
-- **Dorilar ro'yxati**: Barcha qo'shilgan dorilar ko'rsatiladi
-- **Navbatdagi doza**: Keyingi dorini ichish vaqti
-- **"Ichdim" belgilash**: Dori ichilgandan so'ng belgilash
-- **Kunlik progress**: Bugungi dorilar ichilgan miqdori
+---
 
-### ➕ Dori qo'shish (AddMedicationScreen)
-
-- **Dori nomi**: Dorining to'liq nomi
-- **Dozalash**: Bir marta ichiladigan miqdor
-- **Vaqtlar**: Kunlik ichish vaqtlari
-- **Davomiyligi**: Dorini qancha vaqt ichish kerak
-- **Eslatma**: Qo'shimcha ma'lumotlar
-
-### ⚙️ Sozlamalar (SettingsScreen)
-
-- **Til tanlash**: O'zbek, Rus, Ingliz tillari
-- **Tema**: Dark/Light mode
-- **Bildirishnomalar**: Push notification sozlamalari
-- **Ovoz**: Eslatma ovozlari
-- **Vibratsiya**: Titrash sozlamalari
-
-### ℹ️ Ilova haqida (AboutScreen)
-
-- **Versiya**: Ilova versiyasi
-- **Ishlab chiquvchi**: Dasturchi haqida ma'lumot
-- **Bog'lanish**: Email, telefon
-- **Litsenziya**: Open source litsenziya
-- **Yangilanishlar**: So'nggi o'zgarishlar
-
-## 🛠️ Texnik ma'lumotlar
+## 🛠️ Texnik ma’lumotlar
 
 - **Framework**: Flutter
 - **Platforma**: Android, iOS, Web
 - **Til**: Dart
-- **Ma'lumotlar bazasi**: SQLite/Hive
+- **Ma’lumotlar bazasi**: SQLite
 - **Bildirishnomalar**: Local Notifications
 
-## 📋 Keyingi qadamlar
+---
 
-- [ ] Drawer menu yaratish
-- [ ] Har bir sahifa uchun UI dizayn
-- [ ] Ma'lumotlar bazasi sozlash
-- [ ] Bildirishnomalar tizimi
-- [ ] Til qo'llab-quvvatlash
-- [ ] Testing va debugging
+## 📋 Bosqichma-bosqich foydalanish
+
+1. Ilovani o‘rnating va oching
+2. Drawer menyudan kerakli sahifani tanlang
+3. Dori qo‘shing va eslatma vaqtlarini belgilang
+4. Sozlamalardan til va tema tanlang
+5. Bildirishnomalarni yoqing va sog‘lig‘ingizni nazorat qiling!
+
+---
 
 ## 🔗 Foydali havolalar
 
@@ -71,6 +101,6 @@ Bu ilova foydalanuvchilarga dorilarini vaqtida ichishni eslatish uchun yaratilga
 
 ---
 
-**Ishlab chiquvchi**: Eldor
+**Ishlab chiquvchi**: Eldor  
 **Versiya**: 1.0.0  
 **Sana**: 2025
